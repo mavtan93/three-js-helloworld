@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-
 import { createCamera } from './three-js-helper.js';
 import { createRenderer } from './three-js-helper.js';
 import { createLights } from './three-js-helper.js';
@@ -48,36 +47,39 @@ const rotationSpeed = Math.PI / 20; // 9 degrees per frame
 
 function rotateLayer(axis, layer, direction, cubies) {
     console.log(`Rotating ${axis} layer ${layer} in direction ${direction}`);
-    if (isRotating) return;
+     if (isRotating) return;
     isRotating = true;
 
-    const targetRotation = Math.PI / 2 * direction; // 90 degrees
+    // 1. Collect cubies in the layer
+    const layerCubies = rubiksCube.children.filter(cubie => cubie.userData[axis] === layer);
+
+    // 2. Create a temporary group and add cubies
+    const tempGroup = new THREE.Group();
+    layerCubies.forEach(cubie => {
+        // Convert to world position, attach to tempGroup
+        tempGroup.attach(cubie, rubiksCube);
+    });
+    scene.add(tempGroup);
+
+    // 3. Animate rotation of tempGroup
     let currentRotation = 0;
-
-    const rotationLoop = () => {
-        if (currentRotation >= Math.abs(targetRotation)) {
-            isRotating = false;
-            updateCubiePositions(axis, layer, direction, cubies);
-            return;
-        }
-
+    const targetRotation = Math.PI / 2 * direction;
+    function rotationLoop() {
         const step = Math.min(rotationSpeed, Math.abs(targetRotation - currentRotation));
         currentRotation += step;
-
-        cubies.children.forEach(cubie => {
-            const pos = cubie.userData;
-            if (pos[axis] === layer) {
-                switch (axis) {
-                    case 'x': cubie.rotation.y += direction * step; break;
-                    case 'y': cubie.rotation.x += direction * step; break;
-                    case 'z': cubie.rotation.z += direction * step; break;
-                }
-            }
-        });
-
-        requestAnimationFrame(rotationLoop);
-    };
-
+        tempGroup.rotation[axis] = direction * currentRotation;
+        if (currentRotation < Math.abs(targetRotation)) {
+            requestAnimationFrame(rotationLoop);
+        } else {
+            // 4. Detach cubies back to rubiksCube and reset tempGroup
+            // layerCubies.forEach(cubie => {
+            //     tempGroup.remove(cubie);
+            // });
+            // scene.remove(tempGroup);
+            isRotating = false;
+            updateCubiePositions(axis, layer, direction, cubies);
+        }
+    }
     rotationLoop();
 }
 
@@ -133,7 +135,6 @@ document.addEventListener('keydown', (e) => {
         case 'D': rotateLayer('y', -1, -1, rubiksCube); break;
     }
 });
-
 
 function animate() {
     requestAnimationFrame(animate);
