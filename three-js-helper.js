@@ -25,7 +25,7 @@ export function createLights() {
 
 export function createControls(camera, renderer) {
     // OrbitControls
-    const controls= new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     return controls

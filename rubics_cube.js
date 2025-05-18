@@ -33,8 +33,8 @@ const rubiksCube = createRubiksCube(cubeSize, gap, colors);
 
 scene.add(createLights());
 scene.add(rubiksCube);
-document.body.appendChild(renderer.domElement);
 
+document.body.appendChild(renderer.domElement);
 setupKeyboardControls(rubiksCube, scene);
 
 function animate() {
