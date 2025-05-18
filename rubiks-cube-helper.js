@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 export function createCubie(x, y, z, cubeSize, gap, colors) {
+    const cubie = new THREE.Group();
     const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
     const materials = [
         new THREE.MeshBasicMaterial({ color: colors.black }), // -X
@@ -18,8 +19,12 @@ export function createCubie(x, y, z, cubeSize, gap, colors) {
     if (z === -1) materials[5] = new THREE.MeshBasicMaterial({ color: colors.green });
 
     const mesh = new THREE.Mesh(geometry, materials);
-    mesh.position.set(x * (cubeSize + gap), y * (cubeSize + gap), z * (cubeSize + gap));
-    return mesh;
+    cubie.add(mesh);
+    cubie.position.set(x * (cubeSize + gap), y * (cubeSize + gap), z * (cubeSize + gap));
+    cubie.userData = { x, y, z }; // Store original grid position
+
+    console.log(`Cubie created at position: (${x}, ${y}, ${z})`);
+    return cubie;
 }
 
 export function createRubiksCube(cubeSize, gap, colors) {
