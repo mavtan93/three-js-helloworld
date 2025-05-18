@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 
 // Layer rotation logic
+// TODO: this lock is not working properly
 let isRotating = false;
+
+// TODO:create a constructor for rubicks cube and scene
 
 export function createCubie(x, y, z, cubeSize, gap, colors) {
     const cubie = new THREE.Group();
@@ -49,7 +52,7 @@ export function setupKeyboardControls(rubiksCube, scene) {
         switch (e.key) {
             // Front/Back layers (Z-axis)
             case 'f': rotateLayer('z', 1, 1, rubiksCube, scene); break;  // Front layer clockwise
-            case 'F': rotateLayer('z', 1, -1, rubiksCube, scene); break; // Front layer counter-clockwise
+            case 'F': rotateLayer('z', 1, -1, rubiksCube, scene); break;
             case 'b': rotateLayer('z', -1, 1, rubiksCube, scene); break; // Back layer clockwise
             case 'B': rotateLayer('z', -1, -1, rubiksCube, scene); break;
 
@@ -87,6 +90,9 @@ export function rotateLayer(axis, layer, direction, rubiksCube, scene) {
 
     // 3. Animate rotation of tempGroup
     let currentRotation = 0;
+
+    // TODO: should change this to more meaningful constant name
+    // e.g. clockwise, counterclockwise
     const targetRotation = Math.PI / 2 * direction;
     function rotationLoop() {
         const step = Math.min(rotationSpeed, Math.abs(targetRotation - currentRotation));
