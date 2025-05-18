@@ -34,20 +34,18 @@ scene.add(createLights());
 const rubiksCube = createRubiksCube(cubeSize, gap, colors);
 scene.add(rubiksCube);
 
-
-
-        // Controls
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
 
 // Layer rotation logic
 let isRotating = false;
 const rotationSpeed = Math.PI / 20; // 9 degrees per frame
 
-function rotateLayer(axis, layer, direction, cubies) {
+function rotateLayer(axis, layer, direction, rubiksCube) {
     console.log(`Rotating ${axis} layer ${layer} in direction ${direction}`);
-     if (isRotating) return;
+    if (isRotating) return;
     isRotating = true;
 
     // 1. Collect cubies in the layer
@@ -57,7 +55,7 @@ function rotateLayer(axis, layer, direction, cubies) {
     const tempGroup = new THREE.Group();
     layerCubies.forEach(cubie => {
         // Convert to world position, attach to tempGroup
-        tempGroup.attach(cubie, rubiksCube);
+        tempGroup.attach(cubie);
     });
     scene.add(tempGroup);
 
@@ -72,12 +70,12 @@ function rotateLayer(axis, layer, direction, cubies) {
             requestAnimationFrame(rotationLoop);
         } else {
             // 4. Detach cubies back to rubiksCube and reset tempGroup
-            // layerCubies.forEach(cubie => {
-            //     tempGroup.remove(cubie);
-            // });
-            // scene.remove(tempGroup);
+            layerCubies.forEach(cubie => {
+                rubiksCube.attach(cubie);
+            });
+            scene.remove(tempGroup);
             isRotating = false;
-            updateCubiePositions(axis, layer, direction, cubies);
+            updateCubiePositions(axis, layer, direction, rubiksCube);
         }
     }
     rotationLoop();
@@ -88,7 +86,7 @@ function updateCubiePositions(axis, layer, direction, cubies) {
     // Update the userData of each cubie to reflect the new position
     console.log('Updating cubie positions');
     console.log(cubies.children.map(cubie => cubie.userData));
-    
+
     cubies.children.forEach(cubie => {
         const pos = cubie.userData;
         if (pos[axis] === layer) {
