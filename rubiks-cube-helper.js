@@ -48,27 +48,27 @@ export function setupKeyboardControls(rubiksCube, scene) {
         if (isRotating) return;
         switch (e.key) {
             // Front/Back layers (Z-axis)
-            case 'f': rotateLayer('z', 1, 1, isRotating, rubiksCube, scene); break;  // Front layer clockwise
-            case 'F': rotateLayer('z', 1, -1, isRotating, rubiksCube, scene); break; // Front layer counter-clockwise
-            case 'b': rotateLayer('z', -1, 1, isRotating, rubiksCube, scene); break; // Back layer clockwise
-            case 'B': rotateLayer('z', -1, -1, isRotating, rubiksCube, scene); break;
+            case 'f': rotateLayer('z', 1, 1, rubiksCube, scene); break;  // Front layer clockwise
+            case 'F': rotateLayer('z', 1, -1, rubiksCube, scene); break; // Front layer counter-clockwise
+            case 'b': rotateLayer('z', -1, 1, rubiksCube, scene); break; // Back layer clockwise
+            case 'B': rotateLayer('z', -1, -1, rubiksCube, scene); break;
 
             // Left/Right layers (X-axis)
-            case 'l': rotateLayer('x', -1, 1, isRotating, rubiksCube, scene); break; // Left layer clockwise
-            case 'L': rotateLayer('x', -1, -1, isRotating, rubiksCube, scene); break;
-            case 'r': rotateLayer('x', 1, 1, isRotating, rubiksCube, scene); break;  // Right layer clockwise
-            case 'R': rotateLayer('x', 1, -1, isRotating, rubiksCube, scene); break;
+            case 'l': rotateLayer('x', -1, 1, rubiksCube, scene); break; // Left layer clockwise
+            case 'L': rotateLayer('x', -1, -1,  rubiksCube, scene); break;
+            case 'r': rotateLayer('x', 1, 1,  rubiksCube, scene); break;  // Right layer clockwise
+            case 'R': rotateLayer('x', 1, -1,  rubiksCube, scene); break;
 
             // Top/Bottom layers (Y-axis)
-            case 'u': rotateLayer('y', 1, 1, isRotating, rubiksCube, scene); break;   // Top layer clockwise
-            case 'U': rotateLayer('y', 1, -1, isRotating, rubiksCube, scene); break;
-            case 'd': rotateLayer('y', -1, 1, isRotating, rubiksCube, scene); break;  // Bottom layer clockwise
-            case 'D': rotateLayer('y', -1, -1, isRotating, rubiksCube, scene); break;
+            case 'u': rotateLayer('y', 1, 1,  rubiksCube, scene); break;   // Top layer clockwise
+            case 'U': rotateLayer('y', 1, -1,  rubiksCube, scene); break;
+            case 'd': rotateLayer('y', -1, 1,  rubiksCube, scene); break;  // Bottom layer clockwise
+            case 'D': rotateLayer('y', -1, -1,  rubiksCube, scene); break;
         }
     });
 }
 
-export function rotateLayer(axis, layer, direction, isRotating, rubiksCube, scene) {
+export function rotateLayer(axis, layer, direction, rubiksCube, scene) {
     const rotationSpeed = Math.PI / 20; // 9 degrees per frame
     console.log(`Rotating ${axis} layer ${layer} in direction ${direction}`);
     if (isRotating) return;
