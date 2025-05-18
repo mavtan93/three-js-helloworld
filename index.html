@@ -1,13 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>My first three.js app</title>
-    <style>
-      body { margin: 0; }
-    </style>
-  </head>
-  <body>
-    <script type="module" src="/rubics_cube.js"></script>
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <title>My first three.js app</title>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    #banner {
+      background: #222;
+      color: #fff;
+      padding: 12px 24px;
+      font-family: sans-serif;
+      font-size: 1.1em;
+      text-align: center;
+      position: fixed;
+      top: 800;
+      left: 0;
+      width: 100vw;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    body>canvas {
+      margin-top: 48px;
+      /* adjust if needed so canvas is not hidden */
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="banner">
+    Use F/B/L/R/U/D to rotate cube faces. Hold shift for counter-rotation.
+  </div>
+  <script type="module" src="/rubics_cube.js"></script>
+</body>
+
 </html>
