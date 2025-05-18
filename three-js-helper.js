@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export function createCamera() {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -20,4 +21,12 @@ export function createLights() {
     dirLight.position.set(1, 1, 1);
     group.add(dirLight);
     return group;
+}
+
+export function createControls(camera, renderer) {
+    // OrbitControls
+    const controls= new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    return controls
 }
