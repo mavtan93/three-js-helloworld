@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 
 import { createCamera } from './three-js-helper.js';
-import { createRenderer } from './three-js-helper.js';  
-import { createLights } from './three-js-helper.js';    
+import { createRenderer } from './three-js-helper.js';
+import { createLights } from './three-js-helper.js';
+import { createControls } from './three-js-helper.js';
 
-import { createRubiksCube } from './rubiks-cube-helper.js';
+import { createRubiksCube, setupKeyboardControls } from './rubiks-cube-helper.js';
 
 function createScene() {
     return new THREE.Scene();
@@ -27,16 +28,18 @@ const gap = 0.05;
 const scene = createScene();
 const camera = createCamera();
 const renderer = createRenderer();
-document.body.appendChild(renderer.domElement);
+const controls = createControls(camera, renderer);
+const rubiksCube = createRubiksCube(cubeSize, gap, colors);
 
 scene.add(createLights());
-const rubiksCube = createRubiksCube(cubeSize, gap, colors);
 scene.add(rubiksCube);
+
+document.body.appendChild(renderer.domElement);
+setupKeyboardControls(rubiksCube, scene);
 
 function animate() {
     requestAnimationFrame(animate);
-    rubiksCube.rotation.x += 0.01;
-    rubiksCube.rotation.y += 0.01;
+    controls.update();
     renderer.render(scene, camera);
 }
 animate();
