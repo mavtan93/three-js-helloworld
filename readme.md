@@ -1,5 +1,8 @@
-# Installation
-`npm install`
+# Basic setup
+```
+npm install
+npm run server
+```
 
 # Lint
 Eslint@8 is installed and configured in `.eslintrc.json`. 
@@ -13,9 +16,8 @@ To fix linter issues:
 
 > Use // eslint-disable-next-line sparingly to bypass rules only when absolutely necessary.
 
-
-# Serve
+# Start Server
 ```
-npx vite
+npm run serve
 ```
 browse to http://localhost:5173
