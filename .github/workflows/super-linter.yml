@@ -1,0 +1,44 @@
+# Superlinter workflow for linting JavaScript files using ESLint
+# Current superlinter version: 7.4.0 does not support eslint.config.mjs yet.
+
+# ---
+# name: Lint
+
+# on: # yamllint disable-line rule:truthy
+#   push: null
+#   pull_request: null
+
+# permissions: {}
+
+# jobs:
+#   build:
+#     name: Lint 
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       contents: read
+#       packages: read
+#       # To report GitHub Actions status checks
+#       statuses: write
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           # super-linter needs the full git history to get the
+#           # list of files that changed across commits
+#           fetch-depth: 0
+
+#       - name: Super-linter
+#         uses: super-linter/super-linter/slim@v7.4.0 # x-release-please-version
+#         env:
+#           # To report GitHub Actions status checks
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           # Use config files from root of the GitHub repo
+#           LINTER_RULES_PATH: /
+#           # Default config file for eslint
+#           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.mjs
+#           # Only lint JavaScript files
+#           FILTER_REGEX_INCLUDE: '.*\.js$'
+#           # We prefer eslint over standard
+#           VALIDATE_JAVASCRIPT_STANDARD: false

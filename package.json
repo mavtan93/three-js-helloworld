@@ -1,8 +1,21 @@
 {
   "dependencies": {
+    "eslint": "^9.27.0",
     "three": "^0.176.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "globals": "^16.1.0",
+    "prettier": "^3.5.3",
     "vite": "^6.3.5"
+  },
+  "scripts": {
+    "lint": "npx eslint .",
+    "fix": "npx eslint . --fix",
+    "dev": "npx vite", 
+    "build": "npx vite build"
   }
 }
