@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "npx eslint .",
     "fix": "npx eslint . --fix",
-    "server": "npx vite", 
+    "dev": "npx vite", 
     "build": "npx vite build"
   }
 }

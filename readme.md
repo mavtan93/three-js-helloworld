@@ -1,7 +1,7 @@
 # Basic setup
 ```
 npm install
-npm run server
+npm run dev
 ```
 
 # Lint
@@ -16,8 +16,8 @@ To fix linter issues:
 
 > Use // eslint-disable-next-line sparingly to bypass rules only when absolutely necessary.
 
-# Start Server
+# Start Server in dev mode
 ```
-npm run serve
+npm run dev
 ```
 browse to http://localhost:5173
