@@ -1,10 +1,5 @@
 import * as THREE from "three";
 
-// Layer rotation logic
-// TODO: this lock is not working properly
-let isRotating = false;
-
-// TODO:create a constructor for rubicks cube and scene
 
 export function createCubie(x, y, z, cubeSize, gap, colors) {
   const cubie = new THREE.Group();
@@ -61,10 +56,33 @@ export function createRubiksCube(cubeSize, gap, colors) {
   return group;
 }
 
+function createLockedEventListener(handler) {
+  let isLocked = false;
+  
+  return async function(...args) {
+    if (isLocked) {
+      console.warn("Event handler is locked, ignoring this event.");
+      return;      
+    }
+    
+    isLocked = true;
+    try {
+      await handler.apply(this, args);
+    } finally {
+      isLocked = false;
+    }
+  };
+}
+
 // Keyboard controls
 export function setupKeyboardControls(rubiksCube, scene) {
-  document.addEventListener("keydown", (e) => {
-    if (isRotating) return;
+  document.addEventListener("keydown", createLockedEventListener(async(e) => {
+    
+  // Timeout to prevent multiple key presses from triggering too quickly
+  // TODO: this is a hacky way to prevent multiple key presses from triggering too quickly
+    // Ideally, we should use a more robust solution like a queue or a state machine
+    // to handle multiple key presses in a more controlled manner
+  await new Promise(resolve => setTimeout(resolve, 300)); 
     switch (e.key) {
       // Front/Back layers (Z-axis)
       case "f":
@@ -108,14 +126,13 @@ export function setupKeyboardControls(rubiksCube, scene) {
         rotateLayer("y", -1, -1, rubiksCube, scene);
         break;
     }
-  });
+  }));
 }
 
-export function rotateLayer(axis, layer, direction, rubiksCube, scene) {
+
+function rotateLayer(axis, layer, direction, rubiksCube, scene) {
   const rotationSpeed = Math.PI / 20; // 9 degrees per frame
   console.log(`Rotating ${axis} layer ${layer} in direction ${direction}`);
-  if (isRotating) return;
-  isRotating = true;
 
   // 1. Collect cubies in the layer
   const layerCubies = rubiksCube.children.filter(
@@ -155,7 +172,6 @@ export function rotateLayer(axis, layer, direction, rubiksCube, scene) {
     }
   }
   rotationLoop();
-  isRotating = false;
 }
 
 // Update cubie positions after rotation
