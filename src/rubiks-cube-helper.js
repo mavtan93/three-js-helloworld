@@ -1,11 +1,5 @@
 import * as THREE from "three";
 
-// Layer rotation logic
-// TODO: this lock is not working properly
-let isRotating = false;
-
-// TODO:create a constructor for rubicks cube and scene
-
 export function createCubie(x, y, z, cubeSize, gap, colors) {
   const cubie = new THREE.Group();
   const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
@@ -61,61 +55,84 @@ export function createRubiksCube(cubeSize, gap, colors) {
   return group;
 }
 
-// Keyboard controls
-export function setupKeyboardControls(rubiksCube, scene) {
-  document.addEventListener("keydown", (e) => {
-    if (isRotating) return;
-    switch (e.key) {
-      // Front/Back layers (Z-axis)
-      case "f":
-        rotateLayer("z", 1, 1, rubiksCube, scene);
-        break; // Front layer clockwise
-      case "F":
-        rotateLayer("z", 1, -1, rubiksCube, scene);
-        break;
-      case "b":
-        rotateLayer("z", -1, 1, rubiksCube, scene);
-        break; // Back layer clockwise
-      case "B":
-        rotateLayer("z", -1, -1, rubiksCube, scene);
-        break;
+function createLockedEventListener(handler) {
+  let isLocked = false;
 
-      // Left/Right layers (X-axis)
-      case "l":
-        rotateLayer("x", -1, 1, rubiksCube, scene);
-        break; // Left layer clockwise
-      case "L":
-        rotateLayer("x", -1, -1, rubiksCube, scene);
-        break;
-      case "r":
-        rotateLayer("x", 1, 1, rubiksCube, scene);
-        break; // Right layer clockwise
-      case "R":
-        rotateLayer("x", 1, -1, rubiksCube, scene);
-        break;
-
-      // Top/Bottom layers (Y-axis)
-      case "u":
-        rotateLayer("y", 1, 1, rubiksCube, scene);
-        break; // Top layer clockwise
-      case "U":
-        rotateLayer("y", 1, -1, rubiksCube, scene);
-        break;
-      case "d":
-        rotateLayer("y", -1, 1, rubiksCube, scene);
-        break; // Bottom layer clockwise
-      case "D":
-        rotateLayer("y", -1, -1, rubiksCube, scene);
-        break;
+  return async function (...args) {
+    if (isLocked) {
+      console.warn("Event handler is locked, ignoring this event.");
+      return;
     }
-  });
+
+    isLocked = true;
+    try {
+      await handler.apply(this, args);
+    } finally {
+      isLocked = false;
+    }
+  };
 }
 
-export function rotateLayer(axis, layer, direction, rubiksCube, scene) {
+// Keyboard controls
+export function setupKeyboardControls(rubiksCube, scene) {
+  document.addEventListener(
+    "keydown",
+    createLockedEventListener(async (e) => {
+      // Timeout to prevent multiple key presses from triggering too quickly
+      // TODO: this is a hacky way to prevent multiple key presses from triggering too quickly
+      // Ideally, we should use a more robust solution like a queue or a state machine
+      // to handle multiple key presses in a more controlled manner
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      switch (e.key) {
+        // Front/Back layers (Z-axis)
+        case "f":
+          rotateLayer("z", 1, 1, rubiksCube, scene);
+          break; // Front layer clockwise
+        case "F":
+          rotateLayer("z", 1, -1, rubiksCube, scene);
+          break;
+        case "b":
+          rotateLayer("z", -1, 1, rubiksCube, scene);
+          break; // Back layer clockwise
+        case "B":
+          rotateLayer("z", -1, -1, rubiksCube, scene);
+          break;
+
+        // Left/Right layers (X-axis)
+        case "l":
+          rotateLayer("x", -1, 1, rubiksCube, scene);
+          break; // Left layer clockwise
+        case "L":
+          rotateLayer("x", -1, -1, rubiksCube, scene);
+          break;
+        case "r":
+          rotateLayer("x", 1, 1, rubiksCube, scene);
+          break; // Right layer clockwise
+        case "R":
+          rotateLayer("x", 1, -1, rubiksCube, scene);
+          break;
+
+        // Top/Bottom layers (Y-axis)
+        case "u":
+          rotateLayer("y", 1, 1, rubiksCube, scene);
+          break; // Top layer clockwise
+        case "U":
+          rotateLayer("y", 1, -1, rubiksCube, scene);
+          break;
+        case "d":
+          rotateLayer("y", -1, 1, rubiksCube, scene);
+          break; // Bottom layer clockwise
+        case "D":
+          rotateLayer("y", -1, -1, rubiksCube, scene);
+          break;
+      }
+    }),
+  );
+}
+
+function rotateLayer(axis, layer, direction, rubiksCube, scene) {
   const rotationSpeed = Math.PI / 20; // 9 degrees per frame
   console.log(`Rotating ${axis} layer ${layer} in direction ${direction}`);
-  if (isRotating) return;
-  isRotating = true;
 
   // 1. Collect cubies in the layer
   const layerCubies = rubiksCube.children.filter(
@@ -155,7 +172,6 @@ export function rotateLayer(axis, layer, direction, rubiksCube, scene) {
     }
   }
   rotationLoop();
-  isRotating = false;
 }
 
 // Update cubie positions after rotation
