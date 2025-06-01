@@ -58,13 +58,13 @@ export function createRubiksCube(cubeSize, gap, colors) {
 
 function createLockedEventListener(handler) {
   let isLocked = false;
-  
-  return async function(...args) {
+
+  return async function (...args) {
     if (isLocked) {
       console.warn("Event handler is locked, ignoring this event.");
-      return;      
+      return;
     }
-    
+
     isLocked = true;
     try {
       await handler.apply(this, args);
@@ -76,13 +76,13 @@ function createLockedEventListener(handler) {
 
 // Keyboard controls
 export function setupKeyboardControls(rubiksCube, scene) {
-  document.addEventListener("keydown", createLockedEventListener(async(e) => {
-    
-  // Timeout to prevent multiple key presses from triggering too quickly
-  // TODO: this is a hacky way to prevent multiple key presses from triggering too quickly
+  document.addEventListener("keydown", createLockedEventListener(async (e) => {
+
+    // Timeout to prevent multiple key presses from triggering too quickly
+    // TODO: this is a hacky way to prevent multiple key presses from triggering too quickly
     // Ideally, we should use a more robust solution like a queue or a state machine
     // to handle multiple key presses in a more controlled manner
-  await new Promise(resolve => setTimeout(resolve, 300)); 
+    await new Promise(resolve => setTimeout(resolve, 300));
     switch (e.key) {
       // Front/Back layers (Z-axis)
       case "f":
