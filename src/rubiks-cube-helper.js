@@ -1,6 +1,5 @@
 import * as THREE from "three";
 
-
 export function createCubie(x, y, z, cubeSize, gap, colors) {
   const cubie = new THREE.Group();
   const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
@@ -76,59 +75,60 @@ function createLockedEventListener(handler) {
 
 // Keyboard controls
 export function setupKeyboardControls(rubiksCube, scene) {
-  document.addEventListener("keydown", createLockedEventListener(async (e) => {
+  document.addEventListener(
+    "keydown",
+    createLockedEventListener(async (e) => {
+      // Timeout to prevent multiple key presses from triggering too quickly
+      // TODO: this is a hacky way to prevent multiple key presses from triggering too quickly
+      // Ideally, we should use a more robust solution like a queue or a state machine
+      // to handle multiple key presses in a more controlled manner
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      switch (e.key) {
+        // Front/Back layers (Z-axis)
+        case "f":
+          rotateLayer("z", 1, 1, rubiksCube, scene);
+          break; // Front layer clockwise
+        case "F":
+          rotateLayer("z", 1, -1, rubiksCube, scene);
+          break;
+        case "b":
+          rotateLayer("z", -1, 1, rubiksCube, scene);
+          break; // Back layer clockwise
+        case "B":
+          rotateLayer("z", -1, -1, rubiksCube, scene);
+          break;
 
-    // Timeout to prevent multiple key presses from triggering too quickly
-    // TODO: this is a hacky way to prevent multiple key presses from triggering too quickly
-    // Ideally, we should use a more robust solution like a queue or a state machine
-    // to handle multiple key presses in a more controlled manner
-    await new Promise(resolve => setTimeout(resolve, 300));
-    switch (e.key) {
-      // Front/Back layers (Z-axis)
-      case "f":
-        rotateLayer("z", 1, 1, rubiksCube, scene);
-        break; // Front layer clockwise
-      case "F":
-        rotateLayer("z", 1, -1, rubiksCube, scene);
-        break;
-      case "b":
-        rotateLayer("z", -1, 1, rubiksCube, scene);
-        break; // Back layer clockwise
-      case "B":
-        rotateLayer("z", -1, -1, rubiksCube, scene);
-        break;
+        // Left/Right layers (X-axis)
+        case "l":
+          rotateLayer("x", -1, 1, rubiksCube, scene);
+          break; // Left layer clockwise
+        case "L":
+          rotateLayer("x", -1, -1, rubiksCube, scene);
+          break;
+        case "r":
+          rotateLayer("x", 1, 1, rubiksCube, scene);
+          break; // Right layer clockwise
+        case "R":
+          rotateLayer("x", 1, -1, rubiksCube, scene);
+          break;
 
-      // Left/Right layers (X-axis)
-      case "l":
-        rotateLayer("x", -1, 1, rubiksCube, scene);
-        break; // Left layer clockwise
-      case "L":
-        rotateLayer("x", -1, -1, rubiksCube, scene);
-        break;
-      case "r":
-        rotateLayer("x", 1, 1, rubiksCube, scene);
-        break; // Right layer clockwise
-      case "R":
-        rotateLayer("x", 1, -1, rubiksCube, scene);
-        break;
-
-      // Top/Bottom layers (Y-axis)
-      case "u":
-        rotateLayer("y", 1, 1, rubiksCube, scene);
-        break; // Top layer clockwise
-      case "U":
-        rotateLayer("y", 1, -1, rubiksCube, scene);
-        break;
-      case "d":
-        rotateLayer("y", -1, 1, rubiksCube, scene);
-        break; // Bottom layer clockwise
-      case "D":
-        rotateLayer("y", -1, -1, rubiksCube, scene);
-        break;
-    }
-  }));
+        // Top/Bottom layers (Y-axis)
+        case "u":
+          rotateLayer("y", 1, 1, rubiksCube, scene);
+          break; // Top layer clockwise
+        case "U":
+          rotateLayer("y", 1, -1, rubiksCube, scene);
+          break;
+        case "d":
+          rotateLayer("y", -1, 1, rubiksCube, scene);
+          break; // Bottom layer clockwise
+        case "D":
+          rotateLayer("y", -1, -1, rubiksCube, scene);
+          break;
+      }
+    }),
+  );
 }
-
 
 function rotateLayer(axis, layer, direction, rubiksCube, scene) {
   const rotationSpeed = Math.PI / 20; // 9 degrees per frame
