@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "eslint": "^9.27.0",
+    "express": "^5.1.0",
     "three": "^0.176.0"
   },
   "devDependencies": {
@@ -15,7 +16,8 @@
   "scripts": {
     "lint": "npx eslint .",
     "fix": "npx eslint . --fix",
-    "dev": "npx vite", 
-    "build": "npx vite build"
+    "dev": "npx vite",
+    "build": "npx vite build",
+    "start-backend": "node backend/server.js"
   }
 }
