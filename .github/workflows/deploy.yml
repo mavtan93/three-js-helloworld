@@ -1,27 +1,53 @@
+# This workflow builds a project and deploys it to GitHub Pages.
+# It runs on every push to the repository and deploys only from the main branch.
+
+# Documentation:
+# - https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+# - https://docs.github.com/en/actions/deployment/deploying-to-github-pages
 name: Deploy
 
-on:
-  push: null
+# This workflow is triggered on pushes to the repository.
+# Documentation: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+on: push
 
+# This workflow has two jobs: build and deploy.
+# Documentation: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobs
 jobs:
   build:
     name: Build
+    # Images are used to run the job.
+    # Documentation: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#runs-on
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
+        # This step checks out the repository so that the workflow can access its files.
+        # Documentation: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#steps
+        # Using the latest version of the checkout action.
+        # Documentation: https://github.com/actions/checkout/tree/v4/
         uses: actions/checkout@v4
 
       - name: Setup Node
+        # This step sets up Node.js for the workflow.
+        # It uses the latest version of the setup-node action.
+        # Documentation: https://github.com/actions/checkout/tree/v4/
         uses: actions/setup-node@v4
 
       - name: Install dependencies
+        # This step installs the project dependencies using npm.
+        # It uses the npm-install action to handle the installation.
+        # Documentation: https://github.com/actions/checkout/tree/v4/
         uses: bahmutov/npm-install@v1
 
       - name: Build project
+        # This step runs the build command to create production-ready files.
+        # It uses npm to run the build script defined in package.json.
         run: npm run build
 
       - name: Upload production-ready build files
+      # This step uploads the production-ready build files as an artifact.
+        # It uses the upload-artifact action to store the files for later use.
+        # Documentation: https://github.com/actions/checkout/tree/v4/
         uses: actions/upload-artifact@v4
         with:
           name: production-files
@@ -29,19 +55,34 @@ jobs:
 
   deploy:
     name: Deploy
+    # This job depends on the build job, meaning it will only run if the build job is successful.
+    # Documentation: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#needs
     needs: build
+    # This job runs on the latest Ubuntu image.
     runs-on: ubuntu-latest
+    # This job only runs when the push is to the main branch.
+    # Documentation: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onpushbranch
     if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Download artifact
+        # This step downloads the artifact created in the build job.
+        # It uses the download-artifact action to retrieve the files.
+        # Documentation: https://github.com/actions/download-artifact/tree/v4/
         uses: actions/download-artifact@v4
+        # The name of the artifact to download must match the name used in the build job.
         with:
           name: production-files
           path: ./dist
 
       - name: Deploy to GitHub Pages
+        # This step deploys the production-ready files to GitHub Pages.
+        # It uses the peaceiris/actions-gh-pages action to handle the deployment.
+        # Documentation: https://github.com/peaceiris/actions-gh-pages/tree/v4/
         uses: peaceiris/actions-gh-pages@v4
         with:
+          # The branch to deploy to GitHub Pages.
+          # This is typically 'gh-pages' or 'main', depending on your repository settings.
+          # Documentation: https://docs.github.com/en/actions/deployment/deploying-to-github-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
