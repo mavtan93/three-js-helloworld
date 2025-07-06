@@ -27,6 +27,14 @@ app.all('/{*any}', (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+const https = require('https');
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('secrets/key.pem'),
+  cert: fs.readFileSync('secrets/cert.pem')
+};
+
+https.createServer(options, app).listen(port, () => {
+  console.log(`Server running on https://localhost:${port}`);
 });
