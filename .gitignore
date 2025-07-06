@@ -1,3 +1,6 @@
 node_modules/
 dist/index.html
 dist/assets/index-BwbhspVU.js
+backend/secrets/*
+*.pem
+*.crt
